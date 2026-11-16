@@ -1,6 +1,6 @@
 /* Maison Nedyj — garde l'interface sur le téléphone pour une ouverture immédiate, même sans réseau.
    Les données (liste, coches) ne passent pas par ici. */
-const CACHE = 'nedyj-shell-v1';
+const CACHE = 'nedyj-shell-v2';
 const FILES = ['./', 'manifest.webmanifest', 'icon-180.png', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', e => {
