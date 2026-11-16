@@ -1,0 +1,142 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#ffffff"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Maison Nedyj"><meta name="apple-mobile-web-app-status-bar-style" content="default"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><link rel="icon" href="icon-192.png"><title>Maison Nedyj</title><style>
+:root{color-scheme:light;--blue:#002fa7;--ink:#202830;--muted:#5f6870;--line:#e4e7eb;--soft:#f0f3fc}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html{-webkit-text-size-adjust:100%}body{margin:0;background:#f4f5f7;color:var(--ink);font:16px/1.5 system-ui,sans-serif}#app{max-width:520px;margin:auto;background:white;min-height:100vh;padding:calc(24px + env(safe-area-inset-top)) 24px 110px}header{display:flex;align-items:center;justify-content:space-between;color:var(--blue);font-size:12px;letter-spacing:1.6px;font-weight:650}.status{font-size:12px;color:var(--muted);margin:12px 0 26px}h1{font-size:34px;line-height:1.13;letter-spacing:-1.2px;font-weight:500;margin:0 0 16px}h2{font-size:23px;line-height:1.25;letter-spacing:-.4px;font-weight:550;margin:10px 0}h3{font-size:18px;margin:12px 0}p{margin:8px 0 16px}.muted,small{color:var(--muted);font-size:14px}.label{color:var(--blue);font-size:11px;font-weight:700;letter-spacing:1px}.note{padding:16px;background:var(--soft);border-radius:12px;margin:20px 0}.note p:last-child{margin-bottom:0}.section{padding:20px 0;border-top:1px solid var(--line)}button,select,input{font:inherit;touch-action:manipulation}button,select{min-height:46px;border:1px solid var(--line);border-radius:9px;background:white;color:var(--ink);padding:10px 14px;cursor:pointer}button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #8aa8f3;outline-offset:3px}.wide{width:100%;margin:8px 0}.primary{background:var(--blue);color:white;border:0}.dish{display:block;text-align:left;width:100%;border:0;border-bottom:1px solid var(--line);border-radius:0;padding:20px 0}.dish strong{display:block;font-size:22px;line-height:1.25;font-weight:550;margin:7px 0}.dish small{display:block}.back{border:0;color:var(--blue);padding-left:0}.twocol{display:grid;grid-template-columns:1fr 1fr;gap:14px}.count{font-size:42px;color:var(--blue);font-weight:500;line-height:1.2}.row{padding:14px 0;border-bottom:1px solid var(--line)}.row p{margin:3px 0;font-size:14px}.row strong{font-weight:600}.money{font-variant-numeric:tabular-nums}label.check{display:flex;align-items:flex-start;gap:10px;font-size:14px;margin-top:8px;min-height:44px;cursor:pointer;touch-action:manipulation;user-select:none;-webkit-user-select:none}input[type=checkbox]{width:21px;height:21px;accent-color:var(--blue);flex:none}details{border-bottom:1px solid var(--line);padding:14px 0}summary{cursor:pointer;min-height:44px;font-weight:550}ol{padding-left:22px}li{margin-bottom:12px}a{color:var(--blue)}nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);max-width:520px;width:100%;display:grid;grid-template-columns:repeat(4,1fr);padding:8px 6px calc(10px + env(safe-area-inset-bottom));background:white;border-top:1px solid var(--line);z-index:10}nav button{border:0;padding:9px 2px;font-size:12px;display:flex;align-items:center;flex-direction:column;gap:4px}nav button[aria-pressed=true]{background:var(--soft);color:var(--blue)}nav svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.6}.total{font-size:29px;color:var(--blue)}.subnav{display:flex;gap:8px;overflow:auto;margin-bottom:18px}select{width:100%}.foot{font-size:12px;color:var(--muted);margin-top:24px}@media(max-width:360px){#app{padding:calc(20px + env(safe-area-inset-top)) 16px 110px}h1{font-size:30px}}
+#sync{min-height:24px;font-size:12px;color:var(--muted)}.tools{display:flex;gap:8px;align-items:center;margin:12px 0}.tools select{width:auto;flex:1}input[type=text],input[type=search],input[type=url]{width:100%;border:1px solid var(--line);border-radius:8px;padding:12px;min-height:46px}.checked{opacity:.6}.checked strong{text-decoration:line-through}.error{background:#fff2e8;color:#803708;padding:12px;border-radius:8px}#toast{position:fixed;top:calc(8px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);width:min(94%,500px);z-index:50;background:#fff2e8;color:#803708;padding:14px;border-radius:10px;box-shadow:0 3px 16px #0002}#toast:empty{display:none}header button{font-size:12px}form label{display:block;margin-top:10px}body.setup nav,body.setup .tools,body.setup #refresh,body.setup #week{display:none}
+</style></head><body><div id="toast" role="alert"></div><div id="app"><header><span>MAISON NEDYJ</span><button id="refresh" aria-label="Actualiser les données">Actualiser</button></header><div class="tools"><label for="person">Je suis</label><select id="person"><option>Laura</option><option>Tony</option></select></div><div id="sync" role="status" aria-live="polite"></div><div class="status" id="week"></div><main id="view"></main></div><nav aria-label="Navigation principale"></nav><script>
+'use strict';
+/* Maison Nedyj — version autonome.
+   L'interface vit ici; les données restent dans le classeur Google, joint par le lien de la maison.
+   Chaque geste s'applique tout de suite à l'écran, puis part en arrière-plan (file d'attente conservée hors ligne). */
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v);}catch(e){return d;}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}},del(k){try{localStorage.removeItem(k);}catch(e){}}};
+function apiFrom(t){t=String(t||'').trim();const m=t.match(/macros\/s\/([A-Za-z0-9_-]{20,})/)||t.match(/^#?([A-Za-z0-9_-]{20,})$/);return m?'https://script.google.com/macros/s/'+m[1]+'/exec':'';}
+let api=LS.get('nedyj-api',''),server=LS.get('nedyj-cache',null),queue=LS.get('nedyj-queue',[]);
+if(!Array.isArray(queue))queue=[];
+if(server&&(server.version!==5||!server.week||!Array.isArray(server.week.shopping)))server=null;
+const fromHash=apiFrom(location.hash);
+if(fromHash&&fromHash!==api){api=fromHash;server=null;queue=[];LS.set('nedyj-api',api);LS.del('nedyj-cache');LS.del('nedyj-queue');}
+let P=null,state={},additions=[],recipes=[],tab='table',recipe=null,shop='Metro',searchQuery='',draft={name:'',qty:'',shop:'Metro'};
+let syncing=false,offline=false,retryMs=3000,retryTimer=null,toastTimer=null,lastView='',connecting=false,setupError='';
+let person=LS.get('nedyj-person','Laura');if(!['Laura','Tony'].includes(person))person='Laura';document.querySelector('#person').value=person;
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const cash=n=>Number(n).toLocaleString('fr-CA',{style:'currency',currency:'CAD'}),view=document.querySelector('#view');
+const uid=()=>window.crypto?.randomUUID?.()||Date.now()+'-'+Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2);
+const icons=['<path d="M5 3v6m3-6v6M3 3v6a3 3 0 0 0 6 0V3M6 12v9M16 3v18m0-18c5 3 5 9 0 9"/>','<rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V3h8v4M3 12h18"/>','<path d="m3 8 2 12h14l2-12zM8 8l4-6 4 6"/>','<path d="M4 10h16v8a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3zM2 10h20M9 7V3m6 4V3"/>'];
+document.querySelector('nav').innerHTML=['À table','Lunchs','Courses','Cuisine'].map((n,i)=>`<button data-tab="${['table','lunch','courses','cuisine'][i]}"><svg viewBox="0 0 24 24" aria-hidden="true">${icons[i]}</svg>${n}</button>`).join('');
+
+/* ---------- échanges avec le classeur ---------- */
+async function call(payload){
+  const ctl=new AbortController(),timer=setTimeout(()=>ctl.abort(),90000);let text;
+  try{const r=await fetch(api,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload),redirect:'follow',signal:ctl.signal});text=await r.text();}
+  finally{clearTimeout(timer);}
+  let d;try{d=JSON.parse(text);}catch(e){const err=new Error('Le lien de la maison ne répond pas comme prévu.');err.config=true;throw err;}
+  if(!d.ok){const err=new Error(d.message||'Le classeur a refusé la demande.');err.server=true;throw err;}
+  if(d.data?.version!==5||!d.data.week?.id||!Array.isArray(d.data.week.shopping)||!Array.isArray(d.data.recipes))throw new Error('Données inattendues.');
+  return d;
+}
+/* Plusieurs coches sur la même case : seule la dernière part. */
+function compress(ops){const last=new Map();ops.forEach((o,i)=>{if(o.type==='state')last.set(o.week+'|'+o.key,i);});return ops.filter((o,i)=>o.type!=='state'||last.get(o.week+'|'+o.key)===i);}
+function saveQueue(){LS.set('nedyj-queue',queue);}
+function apply(data){
+  if(server&&server.week.id!==data.week.id){recipe=null;searchQuery='';draft={name:'',qty:'',shop};}
+  server=data;queue=queue.filter(o=>o.week===data.week.id);LS.set('nedyj-cache',server);saveQueue();refresh();
+}
+async function sync(){
+  if(!api||syncing)return false;syncing=true;clearTimeout(retryTimer);status();let ok=false;
+  try{
+    do{
+      const sent=queue.slice(0,60),res=await call({ops:compress(sent)}),ids=new Set(sent.map(o=>o.opId));
+      queue=queue.filter(o=>!ids.has(o.opId));apply(res.data);
+      if(res.errors&&res.errors.length)toast(/semaine a changé/.test(res.errors[0].message)?'La semaine a changé : la nouvelle liste est affichée.':res.errors[0].message+' La liste affichée est à jour.');
+    }while(queue.length);
+    offline=false;retryMs=3000;ok=true;
+  }catch(e){
+    offline=true;if(e.config||e.server)toast(e.message);
+    retryTimer=setTimeout(sync,retryMs);retryMs=Math.min(retryMs*2,60000);
+  }finally{syncing=false;status();}
+  return ok;
+}
+function enqueue(op){op.opId=uid();queue.push(op);saveQueue();refresh();status();sync();}
+/* Ce qui est affiché = dernières données du classeur + gestes pas encore envoyés. */
+function derive(){
+  if(!server){P=null;return;}
+  P=server.week;recipes=server.recipes||[];state=Object.assign({},server.state||{});additions=(server.additions||[]).slice();
+  for(const op of queue){if(op.week!==P.id)continue;
+    if(op.type==='state')state[op.key]={value:op.value,par:op.person};
+    else if(op.type==='add'){const id='a-'+op.requestId;if(!additions.some(a=>a.id===id))additions.push({id,shop:op.shop,name:op.name,qty:op.qty,par:op.person,added:true,cost:null});}
+    else if(op.type==='archive')additions=additions.filter(a=>a.id!==op.id);
+  }
+}
+function refresh(){derive();if(!P)return;const v=JSON.stringify([P,state,additions,recipes]);if(v===lastView)return;const first=!lastView;lastView=v;document.querySelector('#week').textContent=P.week;render(!first);}
+function status(){const n=queue.length;let t;
+  if(!api)t='';
+  else if(!server)t=syncing?'Chargement…':'Connexion impossible pour le moment · nouvel essai automatique';
+  else if(offline)t=n?`Hors ligne · ${n} modification${n>1?'s':''} en attente, envoi automatique`:'Hors ligne · dernières données affichées';
+  else if(n)t='Enregistrement…';
+  else t='À jour · partagé entre Laura et Tony';
+  document.querySelector('#sync').textContent=t;}
+function toast(text){const el=document.querySelector('#toast');el.textContent=text||'';clearTimeout(toastTimer);if(text)toastTimer=setTimeout(()=>{el.textContent='';},7000);}
+
+/* ---------- première ouverture : relier l'app au classeur ---------- */
+function setup(){return `<h1>Relier l’app<br>à la maison.</h1><p class="muted">Une seule fois sur ce téléphone : colle le lien habituel de Maison Nedyj (celui qui commence par script.google.com).</p><form id="link"><label for="house">Lien de la maison</label><input id="house" type="text" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://script.google.com/macros/s/…/exec" required><button class="wide primary" ${connecting?'disabled':''}>${connecting?'Connexion…':'Relier'}</button></form>${setupError?`<p class="error">${esc(setupError)}</p>`:''}`;}
+async function connect(text){
+  const candidate=apiFrom(text);
+  if(!candidate){setupError='Ce lien n’est pas reconnu. Il doit ressembler à https://script.google.com/macros/s/…/exec';render();return;}
+  api=candidate;connecting=true;setupError='';offline=false;render();
+  const ok=await sync();connecting=false;
+  if(ok){LS.set('nedyj-api',api);toast('');render();status();}
+  else{clearTimeout(retryTimer);api='';setupError='Impossible de joindre le classeur. Vérifie le lien et ta connexion. Si ça persiste, le déploiement Google n’est pas ouvert à « Tout le monde ».';toast('');render();status();}
+}
+
+/* ---------- écrans ---------- */
+const checked=(type,id)=>state[type+':'+id]?.value===true;
+function total(){return P.shopping.reduce((a,x)=>a+(x.on_hand||checked('have',x.id)?0:Number(x.cost)||0),0)+(P.budget.fees||0);}
+function info(){return `<details><summary>Les détails de la semaine</summary>${P.notes.map(n=>`<p class="muted">${esc(n)}</p>`).join('')}</details><details><summary>Réglages</summary><p class="muted">L’app est reliée au classeur Maison Nedyj. À changer seulement si le lien Google change.</p><button data-relink>Relier à un autre lien</button></details>`;}
+function table(){const n=Number(P.lunches.Laura)+Number(P.lunches.Tony);return `<h1>De bons plats.<br>À votre rythme.</h1><p class="muted">${esc(P.intro||'Choisissez librement parmi les plats de la semaine.')}</p>${P.dishes.map(r=>`<button class="dish" data-recipe="week:${esc(r.id)}"><span class="label">${esc(r.tag||'À CUISINER')}</span><strong>${esc(r.nom)} ›</strong><small>${esc(r.meta)}</small></button>`).join('')}${P.highlight?`<div class="note"><span class="label">${esc(P.highlight.title)}</span><p>${esc(P.highlight.text)}</p></div>`:''}<button class="wide primary" data-tab="lunch">Voir les ${n} lunchs</button><button class="wide" data-tab="library">Toutes les recettes</button>${info()}`;}
+function selectedRecipe(){const [kind,index]=recipe.split(':');return (kind==='week'?P.dishes:recipes).find(r=>r.id===index);}
+function detail(){const r=selectedRecipe();if(!r)return '<p>Recette introuvable.</p>';const archived=recipe.startsWith('archive:');return `<button class="back" data-tab="${archived?'library':'table'}">‹ ${archived?'Le répertoire':'Les plats'}</button><h1>${esc(r.nom)}</h1><p class="muted">${esc(r.meta)}</p>${archived?'<div class="note">Fiche historique conservée. Les quantités, les stocks et les anciennes consignes pour Colette ne constituent pas le plan de cette semaine.</div>':''}${r.service?`<div class="section"><span class="label">POUR PASSER À TABLE</span><p>${esc(r.service)}</p></div>`:''}${!archived&&r.bebe?`<div class="note"><span class="label">POUR COLETTE</span><p>${esc(r.bebe)}</p></div>`:''}${!r.ingredients||!r.etapes?'<p class="note">Fiche incomplète à restaurer. Le titre est conservé.</p>':`<details open><summary>Ingrédients du lot</summary>${String(r.ingredients).split('|').map(x=>{const a=x.split('::');return `<div class="row"><strong>${esc(a[0])}</strong><p>${esc(a[1])}</p></div>`;}).join('')}</details><details open><summary>La recette</summary><ol>${String(r.etapes).split('|').map(x=>`<li>${esc(x)}</li>`).join('')}</ol><p class="muted">${esc(r.attention)}</p></details>`}<button class="wide" data-tab="cuisine">Le bloc cuisine</button>`;}
+function library(){return `<h1>Vos recettes.</h1><p class="muted">${recipes.length} fiches conservées. Les variantes de cette semaine sont dans À table.</p><label for="search">Chercher une recette</label><input id="search" type="search" placeholder="Nom ou ingrédient" value="${esc(searchQuery)}"><div id="results">${recipeList(searchQuery)}</div>`;}
+function recipeList(q){return recipes.filter(r=>(r.nom+' '+r.ingredients).toLocaleLowerCase('fr').includes(q.toLocaleLowerCase('fr'))).map(r=>`<button class="dish" data-recipe="archive:${esc(r.id)}"><strong>${esc(r.nom)}</strong><small>${r.ingredients&&r.etapes?esc(r.meta):'Fiche à restaurer'}</small></button>`).join('')||'<p>Aucune recette trouvée.</p>';}
+function lunch(){return `<h1>Les lunchs<br>sont prévus.</h1><div class="twocol">${['Laura','Tony'].map(n=>`<div class="note"><span class="label">${n.toUpperCase()}</span><div class="count">${Number(P.lunches[n])}</div><small>à préparer</small></div>`).join('')}</div><p class="muted">Tony mange au restaurant le vendredi midi. Soupers au choix, sans calendrier imposé.</p><div class="section"><span class="label">À RÉSERVER EN PREMIER</span><h2>${esc(P.lunch_plan||'Réserver vos contenants')}</h2><p>La répartition entre les plats reste libre. L’omelette ne porte aucun lunch.</p></div><div class="note"><span class="label">POUR PLUS TARD DANS LA SEMAINE</span><p>Congeler rapidement les portions qui ne seront pas mangées dans les 2–3 jours après préparation.</p></div><button class="wide primary" data-tab="cuisine">Préparer les contenants</button>`;}
+function budget(){return `<div class="note"><span class="label">DÉPENSE PRÉVISIONNELLE</span><div class="total money">${cash(total())}</div><p class="muted">Lufa : ${cash(P.lufa_order.total)} au dernier relevé (${esc(P.lufa_order.checked||'22 octobre')}). ${esc(P.lufa_order.note||'')} Prix boucher et Metro estimés. Les ajouts sans prix ne sont pas compris.</p></div>`;}
+function shoppingRow(x){const have=x.on_hand||checked('have',x.id),bought=checked('bought',x.id);return `<div data-item="${esc(x.id)}" class="row ${bought?'checked':''}"><strong>${esc(x.name)}</strong><p>${esc(x.qty)} · ${have?'Déjà à la maison':x.cost==null?'Prix à préciser':cash(x.cost)}</p><p class="muted">${esc(x.use||('Ajouté par '+x.par))}</p>${x.basket_prepared?'<p class="label">DANS LE PANIER LUFA AU DERNIER RELEVÉ</p>':''}${!have?`<label class="check"><input type="checkbox" data-state="bought:${esc(x.id)}" ${bought?'checked':''}><span>${x.shop==='Lufa'?'Reçu':'Acheté'}${bought&&state['bought:'+x.id]?.par?' · '+esc(state['bought:'+x.id].par):''}</span></label>`:''}${!x.on_hand&&!x.basket_prepared&&!bought?`<label class="check"><input type="checkbox" data-state="have:${esc(x.id)}" ${have?'checked':''}><span>Déjà disponible — ne pas acheter</span></label>`:''}${x.added?`<button data-archive="${esc(x.id)}">Retirer cet ajout</button>`:''}</div>`;}
+function items(){if(shop==='Costco'){const expired=P.costco_valid_until&&new Intl.DateTimeFormat('en-CA',{timeZone:'America/Toronto',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date())>P.costco_valid_until;return `<div class="note">${expired?'Relevé ancien : offres à revérifier.':'Rabais nationaux jusqu’au '+esc(P.costco_valid_until)+'.'} Prix et disponibilité près de H1W 2T5 à confirmer. Acheter seulement si nécessaire.</div>${(P.costco||[]).map(c=>`<div class="row"><strong>${esc(c[0])}</strong><p>${esc(c[1])} · ${esc(c[2])}</p></div>`).join('')}`+additions.filter(x=>x.shop===shop).map(shoppingRow).join('');}return (shop==='Lufa'?`<div class="note">Le lait de Colette est conservé. Cette liste ne modifie pas le panier Lufa. Dernier relevé : ${cash(P.lufa_order.total)}.</div>`:shop==='Cool&Simple'?'<div class="note">Dépannage uniquement. Aucun achat prévu pour les recettes de cette semaine.</div>':'')+P.shopping.concat(additions).filter(x=>x.shop===shop).map(shoppingRow).join('');}
+function courses(){return `<h1>Les courses.</h1>${budget()}<label for="shop" class="label">MON MAGASIN</label><select id="shop">${['Lufa','Boucher','Metro','Cool&Simple','Costco'].map(s=>`<option ${shop===s?'selected':''}>${s}</option>`).join('')}</select><div id="items">${items()}</div><details><summary>Ajouter à la liste</summary><form id="add"><label for="product">Produit</label><input id="product" type="text" maxlength="140" value="${esc(draft.shop===shop?draft.name:'')}" required><label for="quantity">Quantité</label><input id="quantity" type="text" maxlength="80" value="${esc(draft.shop===shop?draft.qty:'')}"><button class="wide primary">Ajouter chez ${esc(shop)}</button><p class="muted">Partagé dans la liste seulement. Aucun panier marchand modifié.</p></form></details><p class="foot">Les coches sont partagées et propres à cette semaine.</p>`;}
+function cuisine(){return `<h1>On cuisine.</h1><p class="muted">${esc(P.cooking_label||'Préparez les plats à votre rythme.')} Chronologie indicative.</p><details><summary>À sortir et découper</summary>${P.prep.map(x=>`<div class="row"><strong>${esc(x[0])} · ${esc(x[1])}</strong><p>${esc(x[2])}</p></div>`).join('')}</details>${P.steps.map((s,i)=>`<div class="section"><span class="label">${esc(s[0])}</span><h2>${esc(s[1])}</h2><p>${esc(s[2])}</p><label class="check"><input type="checkbox" data-state="done:${i}" ${checked('done',i)?'checked':''}><span>Étape terminée${checked('done',i)&&state['done:'+i]?.par?' · '+esc(state['done:'+i].par):''}</span></label></div>`).join('')}<button class="wide" data-tab="library">Le répertoire complet</button>`;}
+function render(preserve=false){
+  document.body.classList.toggle('setup',!api||connecting);
+  if(!api||connecting){view.innerHTML=setup();return;}
+  if(!P){view.innerHTML='<h1>On prépare<br>votre semaine.</h1>';return;}
+  const scrollY=window.scrollY,active=document.activeElement;
+  const focusId=active?.id,focusKey=active?.dataset?.state,selection=active&&typeof active.selectionStart==='number'?[active.selectionStart,active.selectionEnd]:null;
+  const details=preserve?Array.from(view.querySelectorAll('details')).map(e=>({title:e.querySelector('summary')?.textContent,open:e.open})):[];
+  view.innerHTML=recipe?detail():({table,lunch,courses,cuisine,library}[tab]||table)();
+  details.forEach(d=>{const el=Array.from(view.querySelectorAll('details')).find(e=>e.querySelector('summary')?.textContent===d.title);if(el)el.open=d.open;});
+  document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.tab===(tab==='library'?'cuisine':tab)));
+  if(preserve){const el=focusId?document.getElementById(focusId):Array.from(view.querySelectorAll('[data-state]')).find(e=>e.dataset.state===focusKey);if(el){el.focus({preventScroll:true});if(selection&&el.setSelectionRange){try{el.setSelectionRange(...selection);}catch(e){}}}window.scrollTo(0,scrollY);}
+}
+
+/* ---------- gestes ---------- */
+document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.id==='refresh'){toast('');sync();return;}
+  if('relink' in b.dataset){if(queue.length&&!confirm('Des modifications ne sont pas encore envoyées. Changer de lien les abandonnera.'))return;clearTimeout(retryTimer);api='';server=null;queue=[];P=null;lastView='';LS.del('nedyj-api');LS.del('nedyj-cache');LS.del('nedyj-queue');history.replaceState(null,'',location.pathname);render();status();return;}
+  if(b.dataset.tab){tab=b.dataset.tab;recipe=null;render();window.scrollTo(0,0);}
+  if(b.dataset.recipe){recipe=b.dataset.recipe;render();window.scrollTo(0,0);}
+  if(b.dataset.archive&&P)enqueue({type:'archive',week:P.id,id:b.dataset.archive});
+});
+document.addEventListener('change',e=>{
+  if(e.target.id==='person'){person=e.target.value;LS.set('nedyj-person',person);}
+  if(e.target.id==='shop'){shop=e.target.value;render();}
+  if(e.target.dataset.state&&P)enqueue({type:'state',week:P.id,key:e.target.dataset.state,value:e.target.checked,person});
+});
+document.addEventListener('input',e=>{if(e.target.id==='search'){searchQuery=e.target.value;document.querySelector('#results').innerHTML=recipeList(searchQuery);}if(e.target.id==='product'||e.target.id==='quantity'){draft={name:document.querySelector('#product').value,qty:document.querySelector('#quantity').value,shop};}});
+document.addEventListener('submit',e=>{
+  if(e.target.id==='link'){e.preventDefault();if(!connecting)connect(document.querySelector('#house').value);return;}
+  if(e.target.id!=='add')return;e.preventDefault();if(!P)return;
+  const name=document.querySelector('#product').value.trim(),qty=document.querySelector('#quantity').value.trim();if(!name)return;
+  draft={name:'',qty:'',shop};enqueue({type:'add',week:P.id,shop,name,qty,person,requestId:uid()});
+});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync();});
+window.addEventListener('online',()=>sync());
+setInterval(()=>{if(!document.hidden)sync();},30000);
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+render();refresh();status();sync();
+</script></body></html>
